@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, session, redirect, url_for
 import config
 from flask_mysqldb import MySQL
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -30,7 +31,7 @@ def login():
     if user is not None:
         session['email'] = email
         session['name'] = user[1]
-        session['surname'] = user[2]
+        session['surnames'] = user[2]
          
         return redirect(url_for('tasks'))
     else:
@@ -47,7 +48,35 @@ def logout():
 
 @app.route('/new-task', methods=['POST'])
 def newTask():
-    title = request.form['']
+    title = request.form['title']
+    description = request.form['description']
+    email = session['email']
+    d = datetime.now()
+    dateTask = d.strftime("%Y-%m-%d %H:%M:%S")
+
+    if title and description and email:
+        cur = mysql.connection.cursor()
+        sql = "INSERT INTO tasks (email, title, description, date_task) VALUES (%s, %s, %s, %s)"
+        data = (email, title, description, dateTask)
+        cur.execute(sql, data)
+        mysql.connection.commit()
+    return redirect(url_for('tasks'))
+
+@app.route('/new-user', methods=['POST'])
+def newUser():
+    name = request.form['name']
+    surnames = request.form['surnames']
+    email = request.form['email']
+    password = request.form['password']
+
+    if name and surnames and email and password:
+        cur = mysql.connection.cursor()
+        sql = "INSERT INTO users (name, surnames, email, password) VALUE (%s, %s, %s, %s)"
+        data = (name, surnames, email, password)
+        cur.execute(sql, data)
+        mysql.connection.commit()
+    return redirect(url_for('tasks'))
+
 
 
 
