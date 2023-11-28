@@ -39,7 +39,18 @@ def login():
     
 @app.route('/tasks', methods=['GET'])
 def tasks():
-    return render_template('tasks.html')
+    email = session['email']
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM tasks WHERE email = %s", [email])
+    tasks = cur.fetchall()
+
+    insertObjet = []
+    columnNames = [column[0] for column in cur.description]
+    for record in tasks:
+        insertObjet.append(dict(zip(columnNames, record)))
+    cur.close()
+
+    return render_template('tasks.html', tasks = insertObjet)
 
 @app.route('/logout', methods=['GET'])
 def logout():
@@ -77,7 +88,15 @@ def newUser():
         mysql.connection.commit()
     return redirect(url_for('tasks'))
 
-
+@app.route("/delete-task", methods=["POST"])
+def deleteTask():
+    cur = mysql.connection.cursor()
+    id = request.form['id']
+    sql = "DELETE FROM tasks WHERE id = %s"
+    data = (id)
+    cur.execute(sql, data)
+    mysql.connection.commit()
+    return redirect(url_for('tasks'))
 
 
 if __name__ == '__main__':
