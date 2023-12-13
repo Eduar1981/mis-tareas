@@ -75,15 +75,15 @@ def newTask():
 
 @app.route('/task-ok', methods=['POST'])
 def taskOk():
-    ok = request.form['ok']
     email = session['email']
-    
-    if ok and email:
+
+    if email:
         cur = mysql.connection.cursor()
-        sql = "INSERT INTO tasks performed (ok ) VALUES(%s)"
-        data =(ok)
+        sql = "INSERT INTO tasks_performed (ok, email) VALUES (%s, %s)"
+        data = ("terminado", email)
         cur.execute(sql, data)
         mysql.connection.commit()
+
     return redirect(url_for('tasks'))
 
 @app.route('/new-user', methods=['POST'])
