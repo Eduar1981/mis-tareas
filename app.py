@@ -73,6 +73,19 @@ def newTask():
         mysql.connection.commit()
     return redirect(url_for('tasks'))
 
+@app.route('/task-ok', methods=['POST'])
+def taskOk():
+    ok = request.form['ok']
+    email = session['email']
+    
+    if ok and email:
+        cur = mysql.connection.cursor()
+        sql = "INSERT INTO tasks performed (ok ) VALUES(%s)"
+        data =(ok)
+        cur.execute(sql, data)
+        mysql.connection.commit()
+    return redirect(url_for('tasks'))
+
 @app.route('/new-user', methods=['POST'])
 def newUser():
     name = request.form['name']

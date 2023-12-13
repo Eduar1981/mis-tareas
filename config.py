@@ -6,6 +6,6 @@ HEX_SEC_KEY = 'd5fb8c4fa8bd46638dadc4e751e0d68d'  """
 
 MYSQL_HOST = 'localhost'
 MYSQL_USER = 'eduar'
-MYSQL_PASSWORD = ''
+MYSQL_PASSWORD = '12345'
 MYSQL_DB = 'mis_tareas'
 HEX_SEC_KEY = 'd5fb8c4fa8bd46638dadc4e751e0d68d' 
